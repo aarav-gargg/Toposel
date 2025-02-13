@@ -38,14 +38,6 @@ const userSchema = new mongoose.Schema(
             enum: ['Male', 'Female', 'Other'],
             required: [true, 'Gender is required'],
         },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-        },
-        updatedAt: {
-            type: Date,
-            default: Date.now,
-        },
     },
     {
         timestamps: true,

@@ -1,15 +1,22 @@
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { validateEmail } from "../helpers/validations.js";
 
 export const login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        const isEmailValid = validateEmail(email);
+
+        if(!isEmailValid){
+            return res.status(400).json({ message: "Enter a valid email" });
+        }
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
@@ -44,12 +51,18 @@ export const signup = async (req, res) => {
     const { name, username, email, password, dob, country, gender } = req.body;
 
     try {
+        const isEmailValid = validateEmail(email);
+
+        if(!isEmailValid){
+            return res.status(400).json({ message: "Enter a valid email" });
+        }
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
+
 
         const newUser = new User({
             name,
